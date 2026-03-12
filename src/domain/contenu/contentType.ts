@@ -1,0 +1,15 @@
+export enum ContentType {
+  article = 'article',
+  aide = 'aide',
+  aides = 'aides',
+  suivi_du_jour = 'suivi_du_jour',
+  quizz = 'quizz',
+  enchainement = 'enchainement',
+  enchainement_kyc = 'enchainement_kyc',
+  service = 'service',
+  profile = 'profile',
+  recommandations = 'recommandations',
+  kyc = 'kyc',
+  defi = 'defi',
+  mosaic = 'mosaic',
+}
