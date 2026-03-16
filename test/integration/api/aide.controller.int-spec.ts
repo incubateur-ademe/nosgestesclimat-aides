@@ -131,12 +131,10 @@ describe("Aide (API test)", () => {
     await TestUtil.create(DB.aide, {
       content_id: "1",
       codes_commune_from_partenaire: ["91477"],
-      codes_postaux: ["11111"],
     });
     await TestUtil.create(DB.aide, {
       content_id: "2",
       codes_commune_from_partenaire: ["21231"],
-      codes_postaux: ["22222"],
     });
 
     // WHEN
@@ -156,7 +154,6 @@ describe("Aide (API test)", () => {
     await TestUtil.create(DB.aide, {
       content_id: "1",
       codes_commune_from_partenaire: ["75056"],
-      codes_postaux: [],
       echelle: Echelle.Métropole,
     });
 
@@ -178,7 +175,6 @@ describe("Aide (API test)", () => {
       codes_commune_from_partenaire: [],
       codes_departement_from_partenaire: ["21"],
       codes_region_from_partenaire: [],
-      codes_postaux: [],
     });
 
     // WHEN
@@ -199,7 +195,6 @@ describe("Aide (API test)", () => {
       codes_commune_from_partenaire: [],
       codes_departement_from_partenaire: ["22"],
       codes_region_from_partenaire: [],
-      codes_postaux: [],
     });
 
     // WHEN
@@ -220,7 +215,6 @@ describe("Aide (API test)", () => {
       codes_commune_from_partenaire: [],
       codes_departement_from_partenaire: [],
       codes_region_from_partenaire: ["27"],
-      codes_postaux: [],
     });
 
     // WHEN
@@ -240,7 +234,6 @@ describe("Aide (API test)", () => {
       codes_commune_from_partenaire: [],
       codes_departement_from_partenaire: [],
       codes_region_from_partenaire: ["28"],
-      codes_postaux: [],
     });
 
     // WHEN
@@ -364,7 +357,6 @@ describe("Aide (API test)", () => {
     TestUtil.token = "12345";
     await TestUtil.create(DB.aide, {
       content_id: "1",
-      codes_postaux: [],
       codes_commune_from_partenaire: ["12345"],
       thematiques: [Thematique.alimentation],
     });

@@ -127,7 +127,6 @@ export class CMSWebhookUsecase {
       partenaires_supp_ids: entry.partenaires
         ? entry.partenaires.map((p) => p.id.toString())
         : [],
-      codes_postaux: this.split(entry.codes_postaux),
       thematiques: entry.thematiques
         ? entry.thematiques.map((elem) => Thematique[elem.code])
         : [],
@@ -139,10 +138,7 @@ export class CMSWebhookUsecase {
       url_simulateur: entry.url_detail_front,
       besoin: entry.besoin ? entry.besoin.code : null,
       besoin_desc: entry.besoin ? entry.besoin.description : null,
-      include_codes_commune: this.split(entry.include_codes_commune),
       exclude_codes_commune: this.split(entry.exclude_codes_commune),
-      codes_departement: this.split(entry.codes_departement),
-      codes_region: this.split(entry.codes_region),
       echelle: Echelle[entry.echelle],
       url_source: entry.url_source,
       url_demande: entry.url_demande,

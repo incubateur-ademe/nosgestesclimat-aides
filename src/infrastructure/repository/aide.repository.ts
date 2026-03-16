@@ -151,21 +151,6 @@ export class AideRepository
     );
   }
 
-  async isCodePostalCouvert(code_postal: string): Promise<boolean> {
-    if (!code_postal) return false;
-    let count;
-    if (App.isProd()) {
-      count = await this.prisma.client.aide.count({
-        where: { codes_postaux: { has: code_postal }, VISIBLE_PROD: true },
-      });
-    } else {
-      count = await this.prisma.client.aide.count({
-        where: { codes_postaux: { has: code_postal } },
-      });
-    }
-    return count > 0;
-  }
-
   async count(filter: AideFilter): Promise<number> {
     const query = this.buildSearchQuery(filter);
     return await this.prisma.client.aide.count(query);
@@ -178,66 +163,7 @@ export class AideRepository
   }
 
   public buildSearchQuery(filter: AideFilter): any {
-    const clauses = this.buildSearchQueryClauses(filter);
-
-    if (App.isProd()) {
-      clauses.push({
-        VISIBLE_PROD: true,
-      });
-    }
-
-    return {
-      take: filter.maxNumber,
-      where: {
-        AND: clauses,
-      },
-    };
-  }
-
-  private buildAideFromDB(aideDB: AideDB): AideDefinition {
-    if (aideDB === null) return null;
-    return new AideDefinition({
-      content_id: aideDB.content_id,
-      titre: aideDB.titre,
-      codes_postaux: aideDB.codes_postaux,
-      thematiques: aideDB.thematiques.map((th) => Thematique[th]),
-      contenu: aideDB.contenu,
-      is_simulateur: aideDB.is_simulateur,
-      montant_max: aideDB.montant_max,
-      url_simulateur: aideDB.url_simulateur,
-      besoin: aideDB.besoin,
-      besoin_desc: aideDB.besoin_desc,
-      codes_departement: aideDB.codes_departement,
-      codes_region: aideDB.codes_region,
-      exclude_codes_commune: aideDB.exclude_codes_commune,
-      include_codes_commune: aideDB.include_codes_commune,
-      echelle: Echelle[aideDB.echelle],
-      url_source: aideDB.url_source,
-      url_demande: aideDB.url_demande,
-      date_expiration: aideDB.date_expiration,
-      derniere_maj: aideDB.derniere_maj,
-      est_gratuit: aideDB.est_gratuit,
-      partenaires_supp_ids: aideDB.partenaires_supp_ids,
-      codes_commune_from_partenaire: aideDB.codes_commune_from_partenaire,
-      codes_departement_from_partenaire:
-        aideDB.codes_departement_from_partenaire,
-      codes_region_from_partenaire: aideDB.codes_region_from_partenaire,
-      VISIBLE_PROD: aideDB.VISIBLE_PROD,
-      question_accroche: aideDB.question_accroche,
-      introduction: aideDB.introduction,
-      explication: aideDB.explication,
-      conditions_eligibilite: aideDB.conditions_eligibilite,
-      equipements_eligibles: aideDB.equipements_eligibles,
-      travaux_eligibles: aideDB.travaux_eligibles,
-      montant: aideDB.montant,
-      en_savoir_plus: aideDB.en_savoir_plus,
-      description_courte: aideDB.description_courte,
-    });
-  }
-
-  private buildSearchQueryClauses(filter: AideFilter): any {
     const clauses = GeographicSQLFilter.generateClauses(
-      filter.code_postal,
       filter.code_commune,
       filter.echelle
     );
@@ -269,6 +195,54 @@ export class AideRepository
       });
     }
 
-    return clauses;
+    if (App.isProd()) {
+      clauses.push({
+        VISIBLE_PROD: true,
+      });
+    }
+
+    return {
+      take: filter.maxNumber,
+      where: {
+        AND: clauses,
+      },
+    };
+  }
+
+  private buildAideFromDB(aideDB: AideDB): AideDefinition {
+    if (aideDB === null) return null;
+    return new AideDefinition({
+      content_id: aideDB.content_id,
+      titre: aideDB.titre,
+      thematiques: aideDB.thematiques.map((th) => Thematique[th]),
+      contenu: aideDB.contenu,
+      is_simulateur: aideDB.is_simulateur,
+      montant_max: aideDB.montant_max,
+      url_simulateur: aideDB.url_simulateur,
+      besoin: aideDB.besoin,
+      besoin_desc: aideDB.besoin_desc,
+      exclude_codes_commune: aideDB.exclude_codes_commune,
+      echelle: Echelle[aideDB.echelle],
+      url_source: aideDB.url_source,
+      url_demande: aideDB.url_demande,
+      date_expiration: aideDB.date_expiration,
+      derniere_maj: aideDB.derniere_maj,
+      est_gratuit: aideDB.est_gratuit,
+      partenaires_supp_ids: aideDB.partenaires_supp_ids,
+      codes_commune_from_partenaire: aideDB.codes_commune_from_partenaire,
+      codes_departement_from_partenaire:
+        aideDB.codes_departement_from_partenaire,
+      codes_region_from_partenaire: aideDB.codes_region_from_partenaire,
+      VISIBLE_PROD: aideDB.VISIBLE_PROD,
+      question_accroche: aideDB.question_accroche,
+      introduction: aideDB.introduction,
+      explication: aideDB.explication,
+      conditions_eligibilite: aideDB.conditions_eligibilite,
+      equipements_eligibles: aideDB.equipements_eligibles,
+      travaux_eligibles: aideDB.travaux_eligibles,
+      montant: aideDB.montant,
+      en_savoir_plus: aideDB.en_savoir_plus,
+      description_courte: aideDB.description_courte,
+    });
   }
 }

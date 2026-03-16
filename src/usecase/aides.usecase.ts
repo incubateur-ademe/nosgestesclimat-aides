@@ -142,12 +142,10 @@ export class AidesUsecase {
 
   async external_count_aides(
     code_commune: string,
-    code_postal: string,
     thematique?: Thematique,
     besoins?: string[]
   ): Promise<number> {
     const filtre: AideFilter = {
-      code_postal: code_postal,
       code_commune: code_commune,
       thematiques: thematique ? [thematique] : undefined,
       besoins: besoins,

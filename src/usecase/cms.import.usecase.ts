@@ -266,7 +266,6 @@ export class CMSImportUsecase {
     const result: AideDefinition = {
       content_id: entry.id.toString(),
       titre: entry.attributes.titre,
-      codes_postaux: CMSImportUsecase.split(entry.attributes.codes_postaux),
       contenu: entry.attributes.description,
       derniere_maj: entry.attributes.derniere_maj
         ? new Date(entry.attributes.derniere_maj)
@@ -297,16 +296,9 @@ export class CMSImportUsecase {
       besoin_desc: entry.attributes.besoin.data
         ? entry.attributes.besoin.data.attributes.description
         : null,
-      include_codes_commune: CMSImportUsecase.split(
-        entry.attributes.include_codes_commune
-      ),
       exclude_codes_commune: CMSImportUsecase.split(
         entry.attributes.exclude_codes_commune
       ),
-      codes_departement: CMSImportUsecase.split(
-        entry.attributes.codes_departement
-      ),
-      codes_region: CMSImportUsecase.split(entry.attributes.codes_region),
       echelle: Echelle[entry.attributes.echelle],
       url_source: entry.attributes.url_source,
       url_demande: entry.attributes.url_demande,

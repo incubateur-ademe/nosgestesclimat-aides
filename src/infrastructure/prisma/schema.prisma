@@ -23,17 +23,13 @@ model Aide {
   url_demande                       String?
   is_simulateur                     Boolean?
   partenaires_supp_ids              String[]  @default([])
-  codes_postaux                     String[]  @default([])
   codes_commune_from_partenaire     String[]  @default([])
   thematiques                       String[]  @default([])
   montant_max                       Int?
   echelle                           String?
   besoin                            String?
   besoin_desc                       String?
-  include_codes_commune             String[]  @default([])
   exclude_codes_commune             String[]  @default([])
-  codes_departement                 String[]  @default([])
-  codes_region                      String[]  @default([])
   codes_departement_from_partenaire String[]  @default([])
   codes_region_from_partenaire      String[]  @default([])
   est_gratuit                       Boolean   @default(false)

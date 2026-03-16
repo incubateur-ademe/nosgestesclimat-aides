@@ -1,8 +1,7 @@
-import { Thematique } from '../thematique/thematique';
-import { Echelle } from './echelle';
+import { Thematique } from "../thematique/thematique";
+import { Echelle } from "./echelle";
 
 export type AideFilter = {
-  code_postal?: string;
   code_commune?: string;
   echelle?: Echelle;
   maxNumber?: number;

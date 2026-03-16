@@ -30,10 +30,7 @@ describe("AideRepository", () => {
       besoin: Besoin.acheter_velo,
       besoin_desc: "hihi",
       codes_commune_from_partenaire: [],
-      codes_departement: [],
       codes_departement_from_partenaire: [],
-      codes_postaux: [],
-      codes_region: [],
       codes_region_from_partenaire: [],
       content_id: "1",
       contenu: "haha",
@@ -42,7 +39,6 @@ describe("AideRepository", () => {
       echelle: Echelle.Commune,
       est_gratuit: false,
       exclude_codes_commune: [],
-      include_codes_commune: [],
       is_simulateur: false,
       montant_max: 1000,
       partenaires_supp_ids: ["1"],
@@ -105,22 +101,6 @@ describe("AideRepository", () => {
   });
   */
 
-  it("searchsearch : liste aide par code postal parmi plusieurs", async () => {
-    // GIVEN
-    await TestUtil.create(DB.aide, {
-      content_id: "1",
-      codes_postaux: ["A", "B"],
-    });
-
-    // WHEN
-    const liste = await aideRepository.search({
-      code_postal: "B",
-    });
-
-    // THEN
-    expect(liste).toHaveLength(1);
-    expect(liste[0].content_id).toEqual("1");
-  });
   it("searchsearch : ne liste pas une aide expirée", async () => {
     // GIVEN
     await TestUtil.create(DB.aide, {
@@ -165,52 +145,6 @@ describe("AideRepository", () => {
 
     // THEN
     expect(liste).toHaveLength(1);
-  });
-  it("search : liste aide sans code postaux", async () => {
-    // GIVEN
-    await TestUtil.create(DB.aide, {
-      content_id: "1",
-      codes_postaux: [],
-    });
-
-    // WHEN
-    const liste = await aideRepository.search({
-      code_postal: "B",
-    });
-
-    // THEN
-    expect(liste).toHaveLength(1);
-    expect(liste[0].content_id).toEqual("1");
-  });
-  it("search : liste aide filtre code postal à null", async () => {
-    // GIVEN
-    await TestUtil.create(DB.aide, {
-      content_id: "1",
-      codes_postaux: ["A", "B"],
-    });
-
-    // WHEN
-    const liste = await aideRepository.search({
-      code_postal: null,
-    });
-
-    // THEN
-    expect(liste).toHaveLength(1);
-    expect(liste[0].content_id).toEqual("1");
-  });
-  it("search : liste aide filtre sans code postal ", async () => {
-    // GIVEN
-    await TestUtil.create(DB.aide, {
-      content_id: "1",
-      codes_postaux: ["A", "B"],
-    });
-
-    // WHEN
-    const liste = await aideRepository.search({});
-
-    // THEN
-    expect(liste).toHaveLength(1);
-    expect(liste[0].content_id).toEqual("1");
   });
   it("search : liste avec max number", async () => {
     // GIVEN
@@ -372,23 +306,6 @@ describe("AideRepository", () => {
     expect(liste).toHaveLength(1);
   });
 
-  it.skip("search : le filtre code commune no match ", async () => {
-    // GIVEN
-    await TestUtil.create(DB.aide, {
-      content_id: "1",
-      include_codes_commune: ["45", "46"],
-      exclude_codes_commune: [],
-    });
-
-    // WHEN
-    const liste = await aideRepository.search({
-      code_commune: "47",
-    });
-
-    // THEN
-    expect(liste).toHaveLength(0);
-  });
-
   it("search : le filtre commune pour partenaire match", async () => {
     // GIVEN
     await TestUtil.create(DB.aide, {
@@ -411,7 +328,6 @@ describe("AideRepository", () => {
     await TestUtil.create(DB.aide, {
       content_id: "1",
       exclude_codes_commune: ["45", "46"],
-      include_codes_commune: [],
     });
 
     // WHEN
@@ -428,7 +344,6 @@ describe("AideRepository", () => {
     await TestUtil.create(DB.aide, {
       content_id: "1",
       exclude_codes_commune: ["45", "46"],
-      include_codes_commune: [],
     });
 
     // WHEN
