@@ -13,21 +13,25 @@ export class AideAPI {
   @ApiProperty() url_source: string;
   @ApiProperty() url_demande: string;
   @ApiProperty() derniere_maj: Date;
-  @ApiProperty() deja_vue_le: Date;
-  @ApiProperty() is_simulateur: boolean;
-  @ApiProperty() codes_postaux: string[];
   @ApiProperty({ enum: Thematique, enumName: "Thematique", isArray: true })
   thematiques: Thematique[];
   @ApiProperty() montant_max: number;
   @ApiProperty({ enum: Besoin }) besoin: Besoin;
   @ApiProperty() besoin_desc: string;
-  @ApiProperty() clicked_demande: boolean;
-  @ApiProperty() clicked_infos: boolean;
   @ApiProperty() partenaire_nom: string;
   @ApiProperty() partenaire_url: string;
   @ApiProperty() partenaire_logo_url: string;
   @ApiProperty() est_gratuit: boolean;
-  @ApiProperty() like_level: number;
+
+  @ApiProperty() question_accroche: string;
+  @ApiProperty() introduction: string;
+  @ApiProperty() explication: string;
+  @ApiProperty() conditions_eligibilite: string;
+  @ApiProperty() equipements_eligibles: string;
+  @ApiProperty() travaux_eligibles: string;
+  @ApiProperty() montant: string;
+  @ApiProperty() en_savoir_plus: string;
+  @ApiProperty() description_courte: string;
 
   public static mapToAPI(aide: Aide): AideAPI {
     return {
@@ -38,21 +42,25 @@ export class AideAPI {
       url_simulateur: aide.url_simulateur,
       url_source: aide.url_source,
       url_demande: aide.url_demande,
-      is_simulateur: aide.is_simulateur,
-      codes_postaux: aide.codes_postaux,
       thematiques: aide.thematiques,
       montant_max: aide.montant_max,
       besoin_desc: aide.besoin_desc,
       besoin: aide.besoin,
-      clicked_demande: aide.clicked_demande,
-      clicked_infos: aide.clicked_infos,
       partenaire_nom: aide.partenaire_nom,
       partenaire_url: aide.partenaire_url,
       partenaire_logo_url: aide.partenaire_logo_url,
       echelle: Echelle[aide.echelle],
       est_gratuit: aide.est_gratuit,
-      deja_vue_le: aide.vue_at,
-      like_level: aide.like_level,
+
+      question_accroche: aide.question_accroche,
+      introduction: aide.introduction,
+      explication: aide.explication,
+      conditions_eligibilite: aide.conditions_eligibilite,
+      equipements_eligibles: aide.equipements_eligibles,
+      travaux_eligibles: aide.travaux_eligibles,
+      montant: aide.montant,
+      en_savoir_plus: aide.en_savoir_plus,
+      description_courte: aide.description_courte,
     };
   }
 }

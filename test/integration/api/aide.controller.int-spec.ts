@@ -64,12 +64,9 @@ describe("Aide (API test)", () => {
     expect(response.body).toHaveLength(1);
 
     const aideBody = response.body[0] as AideAPI;
-    console.log(aideBody);
     expect(aideBody.content_id).toEqual("1");
-    expect(aideBody.codes_postaux).toEqual(["91120"]);
     expect(aideBody.contenu).toEqual("Contenu de l'aide");
     expect(aideBody.echelle).toEqual(Echelle.National);
-    expect(aideBody.is_simulateur).toEqual(true);
     expect(aideBody.url_source).toEqual("https://hello");
     expect(aideBody.url_demande).toEqual("https://demande");
     expect(aideBody.partenaire_nom).toEqual("ADEME");
@@ -284,26 +281,34 @@ describe("Aide (API test)", () => {
     expect(response.status).toBe(200);
 
     const aideBody = response.body as AideAPI;
-    expect(aideBody.content_id).toEqual("45");
-    expect(aideBody.codes_postaux).toEqual(["91120"]);
-    expect(aideBody.contenu).toEqual("ksqjfhqsjf the texte dfjksqmlmfjq");
-    expect(aideBody.echelle).toEqual(Echelle.National);
-    expect(aideBody.is_simulateur).toEqual(true);
-    expect(aideBody.url_source).toEqual("https://hello");
-    expect(aideBody.url_demande).toEqual("https://demande");
-    expect(aideBody.partenaire_nom).toEqual("ADEME");
-    expect(aideBody.partenaire_url).toEqual("https://ademe.fr");
-    expect(aideBody.partenaire_logo_url).toEqual("logo_url");
-    expect(aideBody.montant_max).toEqual(999);
-    expect(aideBody.thematiques).toEqual([
-      Thematique.climat,
-      Thematique.logement,
-    ]);
-    expect(aideBody.titre).toEqual("titreA");
-    expect(aideBody.url_simulateur).toEqual("/aides/velo");
-    expect(aideBody.besoin).toEqual(Besoin.acheter_velo);
-    expect(aideBody.besoin_desc).toEqual("Acheter un vélo");
-    expect(aideBody.est_gratuit).toEqual(false);
+
+    expect(aideBody).toEqual({
+      content_id: "45",
+      titre: "titreA",
+      contenu: "ksqjfhqsjf the texte dfjksqmlmfjq",
+      derniere_maj: null,
+      url_simulateur: "/aides/velo",
+      url_source: "https://hello",
+      url_demande: "https://demande",
+      thematiques: ["climat", "logement"],
+      montant_max: 999,
+      besoin_desc: "Acheter un vélo",
+      besoin: "acheter_velo",
+      partenaire_nom: "ADEME",
+      partenaire_url: "https://ademe.fr",
+      partenaire_logo_url: "logo_url",
+      echelle: "National",
+      est_gratuit: false,
+      question_accroche: "A",
+      introduction: "B",
+      explication: "C",
+      conditions_eligibilite: "D",
+      equipements_eligibles: "E",
+      travaux_eligibles: "F",
+      montant: "G",
+      en_savoir_plus: "H",
+      description_courte: "I",
+    });
   });
 
   it(`GET /aides remplace un block de texte dans une aide aussi dans la consultation du catalogue`, async () => {
