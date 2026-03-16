@@ -1,7 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
 import { Aide } from "../domain/aides/aide";
-import { AideDefinition } from "../domain/aides/aideDefinition";
 import { AideFilter } from "../domain/aides/aideFilter";
 import { Echelle } from "../domain/aides/echelle";
 import { App } from "../domain/app";
@@ -30,11 +29,19 @@ export class AidesUsecase {
     code_commune: string,
     filtre_thematiques: Thematique[]
   ): Promise<Aide[]> {
-    const aide_def_liste = await this.external_get_aides(
-      null,
-      code_commune,
-      filtre_thematiques
-    );
+    const commune =
+      this.communeRepository.getCommuneByCodeINSEESansArrondissement(
+        code_commune
+      );
+    code_commune = commune?.code;
+
+    const filtre: AideFilter = {
+      code_commune: code_commune,
+      date_expiration: new Date(),
+      thematiques: filtre_thematiques,
+    };
+
+    const aide_def_liste = await this.aideRepository.search(filtre);
 
     const aides_nationales: Aide[] = [];
     const aides_locales: Aide[] = [];
@@ -50,31 +57,12 @@ export class AidesUsecase {
       }
     }
 
-    return aides_nationales.concat(aides_locales);
+    return this.personnalisator.personnaliser(
+      aides_nationales.concat(aides_locales)
+    );
   }
 
-  public async external_get_aides(
-    code_postal: string,
-    code_commune: string,
-    filtre_thematiques: Thematique[]
-  ): Promise<AideDefinition[]> {
-    const commune =
-      this.communeRepository.getCommuneByCodeINSEESansArrondissement(
-        code_commune
-      );
-    code_commune = commune?.code;
-
-    const filtre: AideFilter = {
-      code_postal: code_postal,
-      code_commune: code_commune,
-      date_expiration: new Date(),
-      thematiques: filtre_thematiques,
-    };
-
-    return await this.aideRepository.search(filtre);
-  }
-
-  async getOfflineAideUniqueByIdCMS(cms_id: string): Promise<Aide> {
+  async getAideById(cms_id: string): Promise<Aide> {
     const aide_def = this.aideRepository.getAide(cms_id);
 
     if (!aide_def) {

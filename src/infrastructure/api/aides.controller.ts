@@ -20,6 +20,7 @@ import { Throttle, ThrottlerGuard } from "@nestjs/throttler";
 import { AidesUsecase } from "../../usecase/aides.usecase";
 import { GenericControler } from "./genericControler";
 import { AideAPI } from "./types/aide/AideAPI";
+import { Thematique } from "../../domain/thematique/thematique";
 
 @Controller()
 @ApiBearerAuth()
@@ -29,8 +30,7 @@ export class AidesController extends GenericControler {
     super();
   }
 
-  /*
-  @ApiOkResponse({ type: CatalogueAideAPI })
+  @ApiOkResponse({ type: [AideAPI] })
   @ApiQuery({
     name: "thematique",
     enum: Thematique,
@@ -39,15 +39,20 @@ export class AidesController extends GenericControler {
     required: false,
     description: `filtrage par thematiques, plusieurs thematiques possible avec la notation ?thematique=XXX&thematique=YYY`,
   })
-  @Get("utilisateurs/:utilisateurId/aides_v2")
+  @ApiQuery({
+    name: "code_commune",
+    required: false,
+    description: `Code insee de la commune cible`,
+  })
+  @Get("aides")
   @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 20, ttl: 1000 } })
   async getCatalogueAides_v2(
-    @Param("utilisateurId") utilisateurId: string,
     @Query("thematique") thematique: string[] | string,
+    @Query("code_commune") code_commune: string,
     @Request() req
-  ): Promise<CatalogueAideAPI> {
-    this.checkCallerId(req, utilisateurId);
+  ): Promise<AideAPI[]> {
+    this.checkAPIProtectedEndpoint(req);
     const liste_thematiques_input =
       this.getStringListFromStringArrayAPIInput(thematique);
 
@@ -56,13 +61,12 @@ export class AidesController extends GenericControler {
     for (const them_string of liste_thematiques_input) {
       liste_thematiques.push(this.castThematiqueOrException(them_string));
     }
-    const aides = await this.aidesUsecase.getCatalogueAidesUtilisateur(
-      utilisateurId,
+    const aides = await this.aidesUsecase.getCatalogueAides(
+      code_commune,
       liste_thematiques
     );
-    return CatalogueAideAPI.mapToAPI(aides.aides, aides.utilisateur);
+    return aides.map((a) => AideAPI.mapToAPI(a));
   }
-    */
 
   @UseGuards(ThrottlerGuard)
   @Throttle({ default: { limit: 20, ttl: 1000 } })
@@ -72,7 +76,8 @@ export class AidesController extends GenericControler {
     @Param("aideId") aideId: string,
     @Request() req
   ): Promise<AideAPI> {
-    const aide = await this.aidesUsecase.getOfflineAideUniqueByIdCMS(aideId);
+    this.checkAPIProtectedEndpoint(req);
+    const aide = await this.aidesUsecase.getAideById(aideId);
     return AideAPI.mapToAPI(aide);
   }
 }
