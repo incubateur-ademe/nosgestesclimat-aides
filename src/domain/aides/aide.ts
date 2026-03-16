@@ -1,18 +1,10 @@
-import { ContenuLocal } from "../contenu/contenuLocal";
 import { PartenaireDefinition } from "../partenaires/partenaireDefinition";
 import { AideDefinition } from "./aideDefinition";
 
-export class Aide extends AideDefinition implements ContenuLocal {
+export class Aide extends AideDefinition {
   constructor(data: AideDefinition) {
     super(data);
   }
-  vue_at?: Date;
-  clicked_demande?: boolean;
-  clicked_infos?: boolean;
-  like_level?: number;
-  feedback?: string;
-  est_connue_utilisateur?: boolean;
-  sera_sollicitee_utilisateur?: boolean;
   partenaire_nom?: string;
   partenaire_url?: string;
   partenaire_logo_url?: string;
@@ -23,13 +15,6 @@ export class Aide extends AideDefinition implements ContenuLocal {
 
   public static newAideFromHistory(aide_def: AideDefinition): Aide {
     const aide = new Aide(aide_def);
-    aide.clicked_demande = false;
-    aide.clicked_infos = false;
-    aide.vue_at = null;
-    aide.like_level = null;
-    aide.est_connue_utilisateur = null;
-    aide.sera_sollicitee_utilisateur = null;
-    aide.feedback = null;
     return aide;
   }
 
