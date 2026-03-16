@@ -123,6 +123,97 @@ describe("Aide (API test)", () => {
     expect(response.body).toHaveLength(2);
   });
 
+  it(`GET /aides filtrage par code postal ET commune impossible`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    // WHEN
+    const response = await TestUtil.GET(
+      "/aides?code_postal=21000&code_commune=11111"
+    );
+
+    // THEN
+    expect(response.status).toBe(400);
+    expect(response.body.message).toEqual(
+      "soit 'code_postal' soit 'code_commune' est renseigné, pas les deux en même temps"
+    );
+  });
+  it(`GET /aides code commune inconnu`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    // WHEN
+    const response = await TestUtil.GET("/aides?code_commune=12345");
+
+    // THEN
+    expect(response.status).toBe(400);
+    expect(response.body.message).toEqual(
+      "le code INSEE de commune [12345] n'existe pas"
+    );
+  });
+
+  it(`GET /aides code postal inconnu`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    // WHEN
+    const response = await TestUtil.GET("/aides?code_postal=99999");
+
+    // THEN
+    expect(response.status).toBe(400);
+    expect(response.body.message).toEqual(
+      "le code postal [99999] n'existe pas"
+    );
+  });
+
+  it(`GET /aides filtrage par code postal avec commune unique`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    await TestUtil.create(DB.aide, {
+      content_id: "1",
+      codes_commune_from_partenaire: ["21231"],
+    });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      codes_commune_from_partenaire: ["11111"],
+    });
+
+    // WHEN
+    const response = await TestUtil.GET("/aides?code_postal=21000");
+
+    // THEN
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(1);
+    expect(response.body[0].content_id).toEqual("1");
+  });
+
+  it(`GET /aides filtrage par code postal avec multi communes`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    await TestUtil.create(DB.aide, {
+      content_id: "1",
+      codes_commune_from_partenaire: ["54169"],
+    });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      codes_commune_from_partenaire: ["54394"],
+    });
+
+    // WHEN
+    const response = await TestUtil.GET("/aides?code_postal=54490");
+
+    // THEN
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(2);
+  });
+
   it(`GET /aides filtrage par code commune via partenaires `, async () => {
     // GIVEN
     process.env.API_KEY = "12345";
@@ -244,6 +335,24 @@ describe("Aide (API test)", () => {
     expect(response.body).toHaveLength(0);
   });
 
+  it(`GET /aides/id aide manquante`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    await TestUtil.create(DB.aide, {
+      partenaires_supp_ids: ["123"],
+      content_id: "1",
+    });
+    await aideRepository.loadCache();
+
+    // WHEN
+    const response = await TestUtil.GET("/aides/45");
+
+    // THEN
+    expect(response.status).toBe(404);
+  });
+
   it(`GET /aides/id consultation d'une aide à partir de son ID`, async () => {
     // GIVEN
     process.env.API_KEY = "12345";
@@ -340,11 +449,11 @@ describe("Aide (API test)", () => {
     TestUtil.token = "12345";
     await TestUtil.create(DB.aide, {
       date_expiration: new Date(123),
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
     });
 
     // WHEN
-    const response = await TestUtil.GET("/aides?code_commune=12345");
+    const response = await TestUtil.GET("/aides?code_commune=21231");
 
     // THEN
     expect(response.status).toBe(200);
@@ -357,23 +466,23 @@ describe("Aide (API test)", () => {
     TestUtil.token = "12345";
     await TestUtil.create(DB.aide, {
       content_id: "1",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.alimentation],
     });
     await TestUtil.create(DB.aide, {
       content_id: "2",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.logement],
     });
     await TestUtil.create(DB.aide, {
       content_id: "3",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.logement, Thematique.consommation],
     });
 
     // WHEN
     const response = await TestUtil.GET(
-      "/aides?thematique=logement&code_commune=12345"
+      "/aides?thematique=logement&code_commune=21231"
     );
 
     // THEN
@@ -388,38 +497,38 @@ describe("Aide (API test)", () => {
 
     await TestUtil.create(DB.aide, {
       content_id: "1",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.alimentation],
     });
     await TestUtil.create(DB.aide, {
       content_id: "2",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.logement],
     });
     await TestUtil.create(DB.aide, {
       content_id: "3",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.logement, Thematique.consommation],
     });
     await TestUtil.create(DB.aide, {
       content_id: "4",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.consommation],
     });
     await TestUtil.create(DB.aide, {
       content_id: "5",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.climat],
     });
     await TestUtil.create(DB.aide, {
       content_id: "6",
-      codes_commune_from_partenaire: ["12345"],
+      codes_commune_from_partenaire: ["21231"],
       thematiques: [Thematique.loisir],
     });
 
     // WHEN
     const response = await TestUtil.GET(
-      "/aides?thematique=logement&thematique=climat&code_commune=12345"
+      "/aides?thematique=logement&thematique=climat&code_commune=21231"
     );
 
     // THEN

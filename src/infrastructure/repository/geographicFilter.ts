@@ -3,15 +3,21 @@ import { CommuneRepository } from "./commune/commune.repository";
 
 export class GeographicSQLFilter {
   public static generateClauses(
-    code_commune: string,
+    code_commune: string[],
     echelle?: Echelle
   ): any[] {
     const clauses = [];
 
-    const dep =
-      CommuneRepository.findDepartementRegionByCodeCommune(code_commune);
-    const code_departement = dep?.code_departement;
-    const code_region = dep?.code_region;
+    let code_departement;
+    let code_region;
+
+    if (code_commune && code_commune.length > 0) {
+      const dep = CommuneRepository.findDepartementRegionByCodeCommune(
+        code_commune[0]
+      );
+      code_departement = dep?.code_departement;
+      code_region = dep?.code_region;
+    }
 
     if (echelle) {
       clauses.push({
@@ -23,14 +29,14 @@ export class GeographicSQLFilter {
       clauses.push({
         OR: [
           { exclude_codes_commune: { isEmpty: true } },
-          { NOT: { exclude_codes_commune: { has: code_commune } } },
+          { NOT: { exclude_codes_commune: { hasSome: code_commune } } },
         ],
       });
       clauses.push({
         OR: [
           {
             codes_commune_from_partenaire: {
-              has: code_commune,
+              hasSome: code_commune,
             },
           },
           { codes_commune_from_partenaire: { isEmpty: true } },

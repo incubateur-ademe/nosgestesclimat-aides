@@ -2,7 +2,7 @@ import { Thematique } from "../thematique/thematique";
 import { Echelle } from "./echelle";
 
 export type AideFilter = {
-  code_commune?: string;
+  code_commune?: string[];
   echelle?: Echelle;
   maxNumber?: number;
   thematiques?: Thematique[];

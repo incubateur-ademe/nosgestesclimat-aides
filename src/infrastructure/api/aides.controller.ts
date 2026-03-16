@@ -42,7 +42,12 @@ export class AidesController extends GenericControler {
   @ApiQuery({
     name: "code_commune",
     required: false,
-    description: `Code insee de la commune cible`,
+    description: `Code insee de la commune de l'utilisateur`,
+  })
+  @ApiQuery({
+    name: "code_postal",
+    required: false,
+    description: `Code postal de l'utilisateur`,
   })
   @Get("aides")
   @UseGuards(ThrottlerGuard)
@@ -50,6 +55,7 @@ export class AidesController extends GenericControler {
   async getCatalogueAides_v2(
     @Query("thematique") thematique: string[] | string,
     @Query("code_commune") code_commune: string,
+    @Query("code_postal") code_postal: string,
     @Request() req
   ): Promise<AideAPI[]> {
     this.checkAPIProtectedEndpoint(req);
@@ -63,6 +69,7 @@ export class AidesController extends GenericControler {
     }
     const aides = await this.aidesUsecase.getCatalogueAides(
       code_commune,
+      code_postal,
       liste_thematiques
     );
     return aides.map((a) => AideAPI.mapToAPI(a));

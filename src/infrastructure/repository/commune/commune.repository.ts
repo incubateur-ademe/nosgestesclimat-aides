@@ -9,12 +9,24 @@ const LISTE_COMMUNES = _communes as Commune[];
 const LISTE_EPCIS = _epci as EPCI[];
 
 const map_code_commune_to_commune: Map<string, Commune> = new Map();
+const map_code_postal_to_codes_communes: Map<string, Set<string>> = new Map();
 const map_code_EPCI_to_EPCI: Map<string, EPCI> = new Map();
 
 for (const com of LISTE_COMMUNES) {
   // on ignore les communes sans codes postaux
   if (com.codesPostaux) {
     map_code_commune_to_commune.set(com.code, com);
+
+    for (const code_postal of com.codesPostaux) {
+      const current_entry = map_code_postal_to_codes_communes.get(code_postal);
+      if (current_entry) {
+        current_entry.add(com.code);
+      } else {
+        const set = new Set<string>();
+        set.add(com.code);
+        map_code_postal_to_codes_communes.set(code_postal, set);
+      }
+    }
   }
 }
 for (const une_epci of LISTE_EPCIS) {
@@ -164,7 +176,7 @@ export class CommuneRepository {
     return null;
   }
 
-  listeCodesCommunesByEPCICode(code_epci: string): string[] {
+  public listeCodesCommunesByEPCICode(code_epci: string): string[] {
     const the_epci = this.getEPCIBySIRENCode(code_epci);
     const result = [];
 
@@ -173,6 +185,14 @@ export class CommuneRepository {
     }
 
     return result;
+  }
+
+  public listeCodesCommunesByCodePostal(code_postal: string): string[] {
+    const codes_communes = map_code_postal_to_codes_communes.get(code_postal);
+    if (codes_communes) {
+      return Array.from(codes_communes);
+    }
+    return [];
   }
 
   public estCommuneMembreDeEPCI(

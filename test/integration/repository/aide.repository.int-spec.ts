@@ -234,7 +234,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "21231",
+      code_commune: ["21231"],
     });
 
     // THEN
@@ -251,7 +251,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "21231",
+      code_commune: ["21231"],
     });
 
     // THEN
@@ -267,7 +267,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "21231",
+      code_commune: ["21231"],
     });
 
     // THEN
@@ -283,7 +283,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "21231",
+      code_commune: ["21231"],
     });
 
     // THEN
@@ -299,7 +299,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "21231",
+      code_commune: ["21231"],
     });
 
     // THEN
@@ -313,14 +313,41 @@ describe("AideRepository", () => {
       exclude_codes_commune: [],
       codes_commune_from_partenaire: ["45", "46"],
     });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      exclude_codes_commune: [],
+      codes_commune_from_partenaire: ["11"],
+    });
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "46",
+      code_commune: ["46"],
     });
 
     // THEN
     expect(liste).toHaveLength(1);
+  });
+
+  it("search : le filtre MULTI code commune", async () => {
+    // GIVEN
+    await TestUtil.create(DB.aide, {
+      content_id: "1",
+      exclude_codes_commune: [],
+      codes_commune_from_partenaire: ["45"],
+    });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      exclude_codes_commune: [],
+      codes_commune_from_partenaire: ["46"],
+    });
+
+    // WHEN
+    const liste = await aideRepository.search({
+      code_commune: ["45", "46"],
+    });
+
+    // THEN
+    expect(liste).toHaveLength(2);
   });
 
   it("search : le filtre code commune exlusion no match ", async () => {
@@ -332,7 +359,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "47",
+      code_commune: ["47"],
     });
 
     // THEN
@@ -348,7 +375,7 @@ describe("AideRepository", () => {
 
     // WHEN
     const liste = await aideRepository.search({
-      code_commune: "46",
+      code_commune: ["46"],
     });
 
     // THEN

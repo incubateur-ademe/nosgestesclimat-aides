@@ -38,6 +38,22 @@ export class ApplicationError {
   static throwSelectionNotFound(sel: string) {
     this.throwAppError("158", `Selection [${sel}] inconnue`);
   }
+  static throwCodePostalOuCodeCommune() {
+    this.throwAppError(
+      "159",
+      `soit 'code_postal' soit 'code_commune' est renseigné, pas les deux en même temps`
+    );
+  }
+  static throwCodeCommuneNotFound(code: string) {
+    this.throwAppError(
+      "106",
+      `le code INSEE de commune [${code}] n'existe pas`,
+      400
+    );
+  }
+  static throwCodePostalNotFound(code: string) {
+    this.throwAppError("106", `le code postal [${code}] n'existe pas`, 400);
+  }
 
   /*
   static throwInactiveAccountError() {
@@ -571,13 +587,6 @@ export class ApplicationError {
     this.throwAppError(
       "105",
       `l'action de code [${code}] et de type [${type}] n'existe pas`,
-      404
-    );
-  }
-  static throwCodeCommuneNotFound(code: string) {
-    this.throwAppError(
-      "106",
-      `le code INSEE de commune [${code}] n'existe pas`,
       404
     );
   }

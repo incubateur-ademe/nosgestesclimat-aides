@@ -27,32 +27,47 @@ export class AidesUsecase {
 
   async getCatalogueAides(
     code_commune: string,
+    code_postal: string,
     filtre_thematiques: Thematique[]
   ): Promise<Aide[]> {
-    const commune =
-      this.communeRepository.getCommuneByCodeINSEESansArrondissement(
-        code_commune
-      );
-    code_commune = commune?.code;
-
+    if (code_commune && code_postal) {
+      ApplicationError.throwCodePostalOuCodeCommune();
+    }
     const filtre: AideFilter = {
-      code_commune: code_commune,
       date_expiration: new Date(),
       thematiques: filtre_thematiques,
     };
+
+    if (code_commune) {
+      const commune =
+        this.communeRepository.getCommuneByCodeINSEESansArrondissement(
+          code_commune
+        );
+      if (!commune) {
+        ApplicationError.throwCodeCommuneNotFound(code_commune);
+      }
+      filtre.code_commune = [commune.code];
+    }
+
+    if (code_postal) {
+      const communes =
+        this.communeRepository.listeCodesCommunesByCodePostal(code_postal);
+      if (communes.length === 0) {
+        ApplicationError.throwCodePostalNotFound(code_postal);
+      }
+      filtre.code_commune = communes;
+    }
 
     const aide_def_liste = await this.aideRepository.search(filtre);
 
     const aides_nationales: Aide[] = [];
     const aides_locales: Aide[] = [];
     for (const aide_def of aide_def_liste) {
+      const aide = Aide.newAide(aide_def);
+      this.setPartenaire(aide, code_commune);
       if (aide_def.echelle === Echelle.National) {
-        const aide = Aide.newAide(aide_def);
-        this.setPartenaire(aide, code_commune);
         aides_nationales.push(aide);
       } else {
-        const aide = Aide.newAide(aide_def);
-        this.setPartenaire(aide, code_commune);
         aides_locales.push(aide);
       }
     }
@@ -146,7 +161,7 @@ export class AidesUsecase {
     besoins?: string[]
   ): Promise<number> {
     const filtre: AideFilter = {
-      code_commune: code_commune,
+      code_commune: [code_commune],
       thematiques: thematique ? [thematique] : undefined,
       besoins: besoins,
     };
