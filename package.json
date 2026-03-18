@@ -26,7 +26,11 @@
     "db:migrate": "dotenv -e .env.test -- npx prisma migrate dev && dotenv -e .env.run -- npx prisma migrate dev ",
     "db:migrate_scalingo": "npx prisma migrate deploy",
 
-    "prepare": "husky"
+    "prepare": "husky",
+
+    "execute_local": "dotenv -e .env.run -- node dist/src/console.js",
+    "execute": "node dist/src/console.js"
+
   },
   "dependencies": {
     "@getbrevo/brevo": "^1.0.1",

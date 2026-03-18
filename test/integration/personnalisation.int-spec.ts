@@ -2,11 +2,12 @@ import {
   CLE_PERSO,
   Personnalisator,
 } from "../../src/infrastructure/personnalisator";
-import { CommuneRepository } from "../../src/infrastructure/repository/commune/commune.repository";
-import { TestUtil } from "../TestUtil";
+import { BlockTextRepository } from "../../src/infrastructure/repository/blockText.repository";
+import { DB, TestUtil } from "../TestUtil";
 
 describe("Personalisation", () => {
   const personnalisation = new Personnalisator();
+  let blockTextRepository = new BlockTextRepository(TestUtil.prisma);
 
   beforeAll(async () => {
     await TestUtil.appinit();
@@ -78,5 +79,24 @@ describe("Personalisation", () => {
 
     // THEN
     expect(result).toStrictEqual({ done_at: new Date(1) });
+  });
+  it("remplace les block des texte", async () => {
+    // GIVEN
+    await TestUtil.create(DB.blockText, {
+      code: "aaa",
+      id_cms: "1",
+      titre: "haha",
+      texte: "George",
+    });
+
+    await blockTextRepository.loadCache();
+
+    const test_data = { somedata: "hello {aaa}, how are you?" };
+
+    // WHEN
+    const result = personnalisation.personnaliser(test_data);
+
+    // THEN
+    expect(result).toStrictEqual({ somedata: "hello George, how are you?" });
   });
 });

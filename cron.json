@@ -1,0 +1,8 @@
+{
+  "jobs": [
+    {
+      "command": "*/10 * * * * ./scripts/nightly_processing.sh",
+      "size": "S"
+    }
+  ]
+}
