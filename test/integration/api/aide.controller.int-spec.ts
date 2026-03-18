@@ -29,11 +29,33 @@ describe("Aide (API test)", () => {
 
   it("GET /aides => 401 si pas d'API key", async () => {
     // GIVEN
+    process.env.API_KEY = "999999";
     // WHEN
     const response = await TestUtil.getServer().get("/aides");
 
     // THEN
     expect(response.status).toBe(401);
+  });
+  it("GET /aides => 200 si pas d'API KEY dans la conf", async () => {
+    // GIVEN
+    // WHEN
+    const response = await TestUtil.getServer().get(
+      "/aides?code_commune=21231"
+    );
+
+    // THEN
+    expect(response.status).toBe(200);
+  });
+  it("GET /aides => 200 si API KEY = '' dans le conf", async () => {
+    // GIVEN
+    process.env.API_KEY = "";
+    // WHEN
+    const response = await TestUtil.getServer().get(
+      "/aides?code_commune=21231"
+    );
+
+    // THEN
+    expect(response.status).toBe(200);
   });
   it("GET /aides => 403 si mauvaise API key", async () => {
     // GIVEN

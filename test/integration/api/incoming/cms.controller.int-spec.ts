@@ -86,21 +86,25 @@ const CMS_DATA_BLOCKTEXT: CMSWebhookAPI = {
 
 const partenaireRepository = new PartenaireRepository(TestUtil.prisma);
 
+const OLD_ENV = process.env;
+
 beforeAll(async () => {
   await TestUtil.appinit();
 });
 
 beforeEach(async () => {
+  process.env = { ...OLD_ENV }; // Make a copy
   await TestUtil.deleteAll();
-  TestUtil.token = process.env.CMS_WEBHOOK_API_KEY;
 });
 
 afterAll(async () => {
+  process.env = OLD_ENV;
   await TestUtil.appclose();
 });
 
 it("POST /api/incoming/cms - 401 si header manquant", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
   // WHEN
   const response = await TestUtil.getServer()
     .post("/api/incoming/cms")
@@ -111,6 +115,7 @@ it("POST /api/incoming/cms - 401 si header manquant", async () => {
 });
 it("POST /api/incoming/cms - 403 si mauvaise clé API", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
   TestUtil.token = "bad";
   // WHEN
   const response = await TestUtil.POST("/api/incoming/cms").send(CMS_DATA_AIDE);
@@ -121,6 +126,8 @@ it("POST /api/incoming/cms - 403 si mauvaise clé API", async () => {
 
 it("POST /api/incoming/cms - create a new partenaire in partenaire table", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
 
   await TestUtil.create(DB.aide, {
     partenaires_supp_ids: ["123"],
@@ -208,6 +215,8 @@ it("POST /api/incoming/cms - create a new partenaire in partenaire table", async
 
 it("POST /api/incoming/cms - create a new BlockTexte", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
 
   // WHEN
   const response =
@@ -226,6 +235,8 @@ it("POST /api/incoming/cms - create a new BlockTexte", async () => {
 
 it("POST /api/incoming/cms - create a new aide in aide table", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
   await TestUtil.create(DB.partenaire, {
     content_id: "1",
     code_epci: "242100410",
@@ -283,6 +294,8 @@ it("POST /api/incoming/cms - create a new aide in aide table", async () => {
 
 it("POST /api/incoming/cms - updates exisying aide in aide table", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
   await TestUtil.create(DB.aide, { content_id: "123" });
   await TestUtil.create(DB.partenaire, {
     content_id: "1",
@@ -341,6 +354,8 @@ it("POST /api/incoming/cms - updates exisying aide in aide table", async () => {
 
 it("POST /api/incoming/cms - removes existing aide when unpublish", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
   await TestUtil.create(DB.aide, { content_id: "123" });
 
   // WHEN
@@ -357,6 +372,8 @@ it("POST /api/incoming/cms - removes existing aide when unpublish", async () => 
 });
 it("POST /api/incoming/cms - removes existing aide when delete", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
   await TestUtil.create(DB.aide, { content_id: "123" });
 
   // WHEN
@@ -374,6 +391,8 @@ it("POST /api/incoming/cms - removes existing aide when delete", async () => {
 
 it("POST /api/incoming/cms - does nothing when no publishedAt value", async () => {
   // GIVEN
+  process.env.CMS_WEBHOOK_API_KEY = "999999";
+  TestUtil.token = "999999";
   const data = { ...CMS_DATA_AIDE };
   data.entry = { ...data.entry };
   data.entry.publishedAt = null;

@@ -63,7 +63,7 @@ export class AidesController extends GenericControler {
   })
   @Get("aides")
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 25, ttl: 1000 } })
+  @Throttle({ default: { limit: 40, ttl: 2000 } })
   async getCatalogueAides_v2(
     @Query("thematique") thematique: string[] | string,
     @Query("code_commune") code_commune: string,
@@ -93,7 +93,7 @@ export class AidesController extends GenericControler {
   }
 
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 25, ttl: 1000 } })
+  @Throttle({ default: { limit: 40, ttl: 1000 } })
   @ApiOkResponse({ type: AideAPI })
   @Get("aides/:aideId")
   @ApiOperation({

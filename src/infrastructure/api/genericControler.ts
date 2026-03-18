@@ -72,6 +72,17 @@ export class GenericControler {
   }
 
   checkAPIProtectedEndpoint(request: Request) {
+    if (!App.getAPIKey() || App.getAPIKey() === "") return;
+
+    const authorization = request.headers["authorization"] as string;
+    if (!authorization) {
+      throw new UnauthorizedException("API KEY manquante");
+    }
+    if (!authorization.endsWith(App.getAPIKey())) {
+      throw new ForbiddenException("API KEY incorrecte");
+    }
+  }
+  checkAdminAPIProtectedEndpoint(request: Request) {
     const authorization = request.headers["authorization"] as string;
     if (!authorization) {
       throw new UnauthorizedException("API KEY manquante");

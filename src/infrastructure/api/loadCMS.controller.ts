@@ -22,7 +22,7 @@ export class LoadCMSController extends GenericControler {
   })
   @ApiOkResponse({ type: [String] })
   async load_partenaires_from_cms(@Request() req): Promise<string[]> {
-    this.checkAPIProtectedEndpoint(req);
+    this.checkAdminAPIProtectedEndpoint(req);
     return await this.cmsUsecase.loadPartenairesFromCMS();
   }
 
@@ -32,7 +32,7 @@ export class LoadCMSController extends GenericControler {
   })
   @ApiOkResponse({ type: [String] })
   async load_blocktexte_from_cms(@Request() req): Promise<string[]> {
-    this.checkAPIProtectedEndpoint(req);
+    this.checkAdminAPIProtectedEndpoint(req);
     return await this.cmsUsecase.loadBlockTexteFromCMS();
   }
 
@@ -42,7 +42,7 @@ export class LoadCMSController extends GenericControler {
   })
   @ApiOkResponse({ type: [String] })
   async upsertAllCMSaides(@Request() req): Promise<string[]> {
-    this.checkAPIProtectedEndpoint(req);
+    this.checkAdminAPIProtectedEndpoint(req);
     return await this.cmsUsecase.loadAidesFromCMS();
   }
 }
