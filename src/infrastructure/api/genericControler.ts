@@ -72,7 +72,8 @@ export class GenericControler {
   }
 
   checkAPIProtectedEndpoint(request: Request) {
-    if (!App.getAPIKey() || App.getAPIKey() === "") return;
+    if (!App.getAPIKey() || App.getAPIKey() === "" || App.getAPIKey() === "''")
+      return;
 
     const authorization = request.headers["authorization"] as string;
     if (!authorization) {

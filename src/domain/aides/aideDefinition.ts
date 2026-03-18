@@ -9,6 +9,7 @@ export class AideDefinition {
   codes_departement_from_partenaire: string[];
   codes_region_from_partenaire: string[];
   content_id: string;
+  ù;
   contenu: string;
   date_expiration: Date;
   derniere_maj: Date;

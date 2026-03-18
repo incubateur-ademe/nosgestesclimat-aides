@@ -57,6 +57,17 @@ describe("Aide (API test)", () => {
     // THEN
     expect(response.status).toBe(200);
   });
+  it(`GET /aides => 200 si API KEY = "''" dans le conf`, async () => {
+    // GIVEN
+    process.env.API_KEY = "''";
+    // WHEN
+    const response = await TestUtil.getServer().get(
+      "/aides?code_commune=21231"
+    );
+
+    // THEN
+    expect(response.status).toBe(200);
+  });
   it("GET /aides => 403 si mauvaise API key", async () => {
     // GIVEN
     process.env.API_KEY = "999999";
