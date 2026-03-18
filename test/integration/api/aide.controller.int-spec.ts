@@ -46,6 +46,20 @@ describe("Aide (API test)", () => {
     // THEN
     expect(response.status).toBe(403);
   });
+  it("GET /aides => code postal ou commune obligatoire", async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    // WHEN
+    const response = await TestUtil.GET("/aides");
+
+    // THEN
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe(
+      "Un code postal ou un code commune doit être saisi"
+    );
+  });
   it("GET /aides", async () => {
     // GIVEN
     process.env.API_KEY = "12345";
@@ -54,10 +68,13 @@ describe("Aide (API test)", () => {
     await TestUtil.create(DB.partenaire);
     await partenaireRepository.loadCache();
 
-    await TestUtil.create(DB.aide, { partenaires_supp_ids: ["123"] });
+    await TestUtil.create(DB.aide, {
+      partenaires_supp_ids: ["123"],
+      codes_commune_from_partenaire: ["21231"],
+    });
 
     // WHEN
-    const response = await TestUtil.GET("/aides");
+    const response = await TestUtil.GET("/aides?code_commune=21231");
 
     // THEN
     expect(response.status).toBe(200);
@@ -92,11 +109,19 @@ describe("Aide (API test)", () => {
 
     await partenaireRepository.loadCache();
 
-    await TestUtil.create(DB.aide, { content_id: "1", VISIBLE_PROD: true });
-    await TestUtil.create(DB.aide, { content_id: "2", VISIBLE_PROD: false });
+    await TestUtil.create(DB.aide, {
+      content_id: "1",
+      VISIBLE_PROD: true,
+      codes_commune_from_partenaire: ["21231"],
+    });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      VISIBLE_PROD: false,
+      codes_commune_from_partenaire: ["21231"],
+    });
 
     // WHEN
-    const response = await TestUtil.GET("/aides");
+    const response = await TestUtil.GET("/aides?code_commune=21231");
 
     // THEN
     expect(response.status).toBe(200);
@@ -112,11 +137,19 @@ describe("Aide (API test)", () => {
 
     await partenaireRepository.loadCache();
 
-    await TestUtil.create(DB.aide, { content_id: "1", VISIBLE_PROD: true });
-    await TestUtil.create(DB.aide, { content_id: "2", VISIBLE_PROD: false });
+    await TestUtil.create(DB.aide, {
+      content_id: "1",
+      VISIBLE_PROD: true,
+      codes_commune_from_partenaire: ["21231"],
+    });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      VISIBLE_PROD: false,
+      codes_commune_from_partenaire: ["21231"],
+    });
 
     // WHEN
-    const response = await TestUtil.GET("/aides");
+    const response = await TestUtil.GET("/aides?code_commune=21231");
 
     // THEN
     expect(response.status).toBe(200);
@@ -136,7 +169,7 @@ describe("Aide (API test)", () => {
     // THEN
     expect(response.status).toBe(400);
     expect(response.body.message).toEqual(
-      "soit 'code_postal' soit 'code_commune' est renseigné, pas les deux en même temps"
+      "Impossible de renseigner en même temps un code postal ET un code commune"
     );
   });
   it(`GET /aides code commune inconnu`, async () => {
@@ -323,28 +356,30 @@ describe("Aide (API test)", () => {
 
     await TestUtil.create(DB.aide, {
       content_id: "1",
-      codes_commune_from_partenaire: [],
+      codes_commune_from_partenaire: ["21231"],
       codes_departement_from_partenaire: [],
       codes_region_from_partenaire: [],
       besoin: Besoin.broyer_vege,
     });
     await TestUtil.create(DB.aide, {
       content_id: "2",
-      codes_commune_from_partenaire: [],
+      codes_commune_from_partenaire: ["21231"],
       codes_departement_from_partenaire: [],
       codes_region_from_partenaire: [],
       besoin: Besoin.composter,
     });
 
     // WHEN
-    const response = await TestUtil.GET("/aides");
+    const response = await TestUtil.GET("/aides?code_commune=21231");
 
     // THEN
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(2);
 
     // WHEN
-    const response2 = await TestUtil.GET("/aides?besoin=composter");
+    const response2 = await TestUtil.GET(
+      "/aides?besoin=composter&code_commune=21231"
+    );
 
     // THEN
     expect(response2.status).toBe(200);
@@ -479,10 +514,11 @@ describe("Aide (API test)", () => {
     await TestUtil.create(DB.aide, {
       partenaires_supp_ids: ["123"],
       contenu: "ksqjfhqsjf {block_123} dfjksqmlmfjq",
+      codes_commune_from_partenaire: ["21231"],
     });
 
     // WHEN
-    const response = await TestUtil.GET("/aides");
+    const response = await TestUtil.GET("/aides?code_commune=21231");
 
     // THEN
     expect(response.status).toBe(200);

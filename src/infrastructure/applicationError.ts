@@ -44,7 +44,7 @@ export class ApplicationError {
   static throwCodePostalOuCodeCommune() {
     this.throwAppError(
       "05",
-      `soit 'code_postal' soit 'code_commune' est renseigné, pas les deux en même temps`
+      `Impossible de renseigner en même temps un code postal ET un code commune`
     );
   }
   static throwCodeCommuneNotFound(code: string) {
@@ -56,6 +56,12 @@ export class ApplicationError {
   }
   static throwCodePostalNotFound(code: string) {
     this.throwAppError("07", `le code postal [${code}] n'existe pas`, 400);
+  }
+  static throwCodePostalOuCodeCommuneObligatoire() {
+    this.throwAppError(
+      "08",
+      `Un code postal ou un code commune doit être saisi`
+    );
   }
 
   /*

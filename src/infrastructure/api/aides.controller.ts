@@ -32,6 +32,11 @@ export class AidesController extends GenericControler {
   }
 
   @ApiOkResponse({ type: [AideAPI] })
+  @ApiOperation({
+    summary: `Renvoie une liste d'aides fonction de paramètres de filtrage.`,
+    description:
+      "Est obligatoire soit un code commune, soit un code postal, le reste est optionnel",
+  })
   @ApiQuery({
     name: "thematique",
     enum: Thematique,
@@ -43,7 +48,7 @@ export class AidesController extends GenericControler {
   @ApiQuery({
     name: "code_commune",
     required: false,
-    description: `Code insee de la commune de l'utilisateur`,
+    description: `Code INSEE de la commune de l'utilisateur`,
   })
   @ApiQuery({
     name: "code_postal",
@@ -88,9 +93,12 @@ export class AidesController extends GenericControler {
   }
 
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 20, ttl: 1000 } })
+  @Throttle({ default: { limit: 25, ttl: 1000 } })
   @ApiOkResponse({ type: AideAPI })
   @Get("aides/:aideId")
+  @ApiOperation({
+    summary: `Renvoie une aide unique par son ID`,
+  })
   async getAideUnique(
     @Param("aideId") aideId: string,
     @Request() req

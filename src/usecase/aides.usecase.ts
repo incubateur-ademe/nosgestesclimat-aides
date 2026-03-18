@@ -35,6 +35,9 @@ export class AidesUsecase {
     if (code_commune && code_postal) {
       ApplicationError.throwCodePostalOuCodeCommune();
     }
+    if (!code_commune && !code_postal) {
+      ApplicationError.throwCodePostalOuCodeCommuneObligatoire();
+    }
     const filtre: AideFilter = {
       date_expiration: new Date(),
       thematiques: filtre_thematiques,
