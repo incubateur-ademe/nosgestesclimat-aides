@@ -197,7 +197,7 @@ export class AidesUsecase {
           "Admin",
           `Bonjour oh toi grande prêtresse des Z !
 <br>
-<br>Sache que j'ai trouvé l'aide <a href="${App.getCmsAidePreviewURL()}/${id}">numéro ${id}</a> qui va expirer dans moins de 1 mois 🧐
+<br>Sache que j'ai trouvé l'aide numéro ${id} qui va expirer dans moins de 1 mois 🧐
 <br>
 <br>je pense que cela peut t'intéresser
 <br>
@@ -217,7 +217,7 @@ export class AidesUsecase {
           "Admin",
           `Bonjour oh toi grande prêtresse des Z !
 <br>
-<br>Je veux pas te stresser plus que cela, mais l'aide <a href="${App.getCmsAidePreviewURL()}/${id}">numéro ${id}</a> va expirer dans moins de 1 semaine 😱
+<br>Je veux pas te stresser plus que cela, mais l'aide numéro ${id} va expirer dans moins de 1 semaine 😱
 <br>
 <br>je pense qu'il est VRAIMENT temps de faire quelque chose...
 <br>
@@ -237,7 +237,7 @@ export class AidesUsecase {
           "Admin",
           `Bonjour oh toi grande prêtresse des Z !
 <br>
-<br>Je ne sais pas si c'est voulu, mais l'aide <a href="${App.getCmsAidePreviewURL()}/${id}">numéro ${id}</a> est belle et bien <strong>expirée</strong> 😭, par mesure de précaution j'ai décidé de ne plus la rendre visible sur le service jusqu'à nouvel ordre.
+<br>Je ne sais pas si c'est voulu, mais l'aide numéro ${id} est belle et bien <strong>expirée</strong> 😭, par mesure de précaution j'ai décidé de ne plus la rendre visible sur le service jusqu'à nouvel ordre.
 <br>
 <br>Je ne veux pas juger, mais son altesse a quand même un peu échoué dans sa mission de maintenir l'ordre dans le royaume....
 <br>

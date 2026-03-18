@@ -34,4 +34,8 @@ export class App {
   public static getAdminAPIKey(): string {
     return process.env.ADMIN_API_KEY;
   }
+
+  public static getEmailReplyTo(): string {
+    return "email@email.com";
+  }
 }
