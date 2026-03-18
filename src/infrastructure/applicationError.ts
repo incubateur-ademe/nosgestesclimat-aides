@@ -30,29 +30,32 @@ export class ApplicationError {
   }
 
   static throwAideNotFound(content_id: string) {
-    this.throwAppError("093", `l'aide d'id [${content_id}] n'existe pas`, 404);
+    this.throwAppError("01", `l'aide d'id [${content_id}] n'existe pas`, 404);
   }
   static throwThematiqueNotFound(them: string) {
-    this.throwAppError("084", `Thematique [${them}] inconnue`);
+    this.throwAppError("02", `Thematique [${them}] inconnue`);
+  }
+  static throwBesoinNotFound(bes: string) {
+    this.throwAppError("03", `Besoin [${bes}] inconnu`);
   }
   static throwSelectionNotFound(sel: string) {
-    this.throwAppError("158", `Selection [${sel}] inconnue`);
+    this.throwAppError("04", `Selection [${sel}] inconnue`);
   }
   static throwCodePostalOuCodeCommune() {
     this.throwAppError(
-      "159",
+      "05",
       `soit 'code_postal' soit 'code_commune' est renseigné, pas les deux en même temps`
     );
   }
   static throwCodeCommuneNotFound(code: string) {
     this.throwAppError(
-      "106",
+      "06",
       `le code INSEE de commune [${code}] n'existe pas`,
       400
     );
   }
   static throwCodePostalNotFound(code: string) {
-    this.throwAppError("106", `le code postal [${code}] n'existe pas`, 400);
+    this.throwAppError("07", `le code postal [${code}] n'existe pas`, 400);
   }
 
   /*

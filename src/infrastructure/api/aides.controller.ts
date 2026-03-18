@@ -21,6 +21,7 @@ import { AidesUsecase } from "../../usecase/aides.usecase";
 import { GenericControler } from "./genericControler";
 import { AideAPI } from "./types/aide/AideAPI";
 import { Thematique } from "../../domain/thematique/thematique";
+import { Besoin } from "../../domain/aides/besoin";
 
 @Controller()
 @ApiBearerAuth()
@@ -49,13 +50,20 @@ export class AidesController extends GenericControler {
     required: false,
     description: `Code postal de l'utilisateur`,
   })
+  @ApiQuery({
+    name: "besoin",
+    enum: Besoin,
+    required: false,
+    description: `besoin qui regroupe plusieurs aides, par exemple "composter"`,
+  })
   @Get("aides")
   @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { limit: 20, ttl: 1000 } })
+  @Throttle({ default: { limit: 25, ttl: 1000 } })
   async getCatalogueAides_v2(
     @Query("thematique") thematique: string[] | string,
     @Query("code_commune") code_commune: string,
     @Query("code_postal") code_postal: string,
+    @Query("besoin") besoin: string,
     @Request() req
   ): Promise<AideAPI[]> {
     this.checkAPIProtectedEndpoint(req);
@@ -67,10 +75,14 @@ export class AidesController extends GenericControler {
     for (const them_string of liste_thematiques_input) {
       liste_thematiques.push(this.castThematiqueOrException(them_string));
     }
+
+    const code_besoin = this.castBesoin(besoin);
+
     const aides = await this.aidesUsecase.getCatalogueAides(
       code_commune,
       code_postal,
-      liste_thematiques
+      liste_thematiques,
+      code_besoin
     );
     return aides.map((a) => AideAPI.mapToAPI(a));
   }

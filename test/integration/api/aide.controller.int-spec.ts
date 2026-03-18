@@ -315,6 +315,54 @@ describe("Aide (API test)", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveLength(1);
   });
+
+  it(`GET /aides filtrage par besoin`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    await TestUtil.create(DB.aide, {
+      content_id: "1",
+      codes_commune_from_partenaire: [],
+      codes_departement_from_partenaire: [],
+      codes_region_from_partenaire: [],
+      besoin: Besoin.broyer_vege,
+    });
+    await TestUtil.create(DB.aide, {
+      content_id: "2",
+      codes_commune_from_partenaire: [],
+      codes_departement_from_partenaire: [],
+      codes_region_from_partenaire: [],
+      besoin: Besoin.composter,
+    });
+
+    // WHEN
+    const response = await TestUtil.GET("/aides");
+
+    // THEN
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveLength(2);
+
+    // WHEN
+    const response2 = await TestUtil.GET("/aides?besoin=composter");
+
+    // THEN
+    expect(response2.status).toBe(200);
+    expect(response2.body).toHaveLength(1);
+  });
+  it(`GET /aides besoin inconnu`, async () => {
+    // GIVEN
+    process.env.API_KEY = "12345";
+    TestUtil.token = "12345";
+
+    // WHEN
+    const response = await TestUtil.GET("/aides?besoin=voler");
+
+    // THEN
+    expect(response.status).toBe(400);
+    expect(response.body.message).toEqual("Besoin [voler] inconnu");
+  });
+
   it(`GET /aides filtrage par region - NO MATCH`, async () => {
     // GIVEN
     process.env.API_KEY = "12345";

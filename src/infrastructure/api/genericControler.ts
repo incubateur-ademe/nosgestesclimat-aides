@@ -9,6 +9,7 @@ import { App } from "../../../src/domain/app";
 import { Thematique } from "../../domain/thematique/thematique";
 import { ApplicationError } from "../applicationError";
 import { ControllerExceptionFilter } from "./controllerException.filter";
+import { Besoin } from "../../domain/aides/besoin";
 
 @UseFilters(new ControllerExceptionFilter())
 @Injectable()
@@ -51,6 +52,15 @@ export class GenericControler {
       ApplicationError.throwThematiqueNotFound(code_thematique);
     }
     return thematique;
+  }
+
+  public castBesoin(code_besoin: string): Thematique {
+    if (!code_besoin) return null;
+    const besoin = Besoin[code_besoin];
+    if (!besoin) {
+      ApplicationError.throwBesoinNotFound(code_besoin);
+    }
+    return besoin;
   }
 
   public castSelectionOrException(code_selection: string): Selection {

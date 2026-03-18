@@ -13,6 +13,7 @@ import { PartenaireRepository } from "../infrastructure/repository/partenaire.re
 import { PartenaireUsecase } from "./partenaire.usecase";
 import { Personnalisator } from "../infrastructure/personnalisator";
 import { EmailSender } from "../infrastructure/email/emailSender";
+import { Besoin } from "../domain/aides/besoin";
 
 @Injectable()
 export class AidesUsecase {
@@ -28,7 +29,8 @@ export class AidesUsecase {
   async getCatalogueAides(
     code_commune: string,
     code_postal: string,
-    filtre_thematiques: Thematique[]
+    filtre_thematiques: Thematique[],
+    besoin: Besoin
   ): Promise<Aide[]> {
     if (code_commune && code_postal) {
       ApplicationError.throwCodePostalOuCodeCommune();
@@ -37,6 +39,10 @@ export class AidesUsecase {
       date_expiration: new Date(),
       thematiques: filtre_thematiques,
     };
+
+    if (besoin) {
+      filtre.besoins = [besoin];
+    }
 
     if (code_commune) {
       const commune =
