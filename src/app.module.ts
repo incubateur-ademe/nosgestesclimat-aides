@@ -15,7 +15,7 @@ import { EmailSender } from "./infrastructure/email/emailSender";
 import { Personnalisator } from "./infrastructure/personnalisator";
 import { ScheduleModule } from "@nestjs/schedule";
 import { ThrottlerModule } from "@nestjs/throttler";
-import { CMSController } from "./infrastructure/api/incoming/cms.controller";
+import { WebhookCMSController } from "./infrastructure/api/webhookCMS.controller";
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { CMSController } from "./infrastructure/api/incoming/cms.controller";
       },
     ]),
   ],
-  controllers: [AidesController, LoadCMSController, CMSController],
+  controllers: [AidesController, LoadCMSController, WebhookCMSController],
   providers: [
     PrismaService,
     AideRepository,
