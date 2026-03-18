@@ -195,9 +195,9 @@ export class AidesUsecase {
         const sent_email = await this.emailSender.sendEmail(
           email,
           "Admin",
-          `Bonjour oh toi grande prêtresse des Z !
+          `Bonjour !
 <br>
-<br>Sache que j'ai trouvé l'aide numéro ${id} qui va expirer dans moins de 1 mois 🧐
+<br>Sachez que j'ai trouvé l'aide numéro ${id} qui va expirer dans moins de 1 mois 🧐
 <br>
 <br>je pense que cela peut t'intéresser
 <br>
@@ -215,13 +215,13 @@ export class AidesUsecase {
         const sent_email = await this.emailSender.sendEmail(
           email,
           "Admin",
-          `Bonjour oh toi grande prêtresse des Z !
+          `Bonjour !
 <br>
-<br>Je veux pas te stresser plus que cela, mais l'aide numéro ${id} va expirer dans moins de 1 semaine 😱
+<br>Je veux pas vous stresser plus que cela, mais l'aide numéro ${id} va expirer dans moins de 1 semaine 😱
 <br>
 <br>je pense qu'il est VRAIMENT temps de faire quelque chose...
 <br>
-<br>Je te souhaite néanmoins une bien bonne journée`,
+<br>Je vous souhaite néanmoins une bien bonne journée`,
           `L'aide d'id ${id} va expirer dans 1 semaine`
         );
         if (sent_email) {
@@ -235,13 +235,13 @@ export class AidesUsecase {
         const sent_email = await this.emailSender.sendEmail(
           email,
           "Admin",
-          `Bonjour oh toi grande prêtresse des Z !
+          `Bonjour !
 <br>
 <br>Je ne sais pas si c'est voulu, mais l'aide numéro ${id} est belle et bien <strong>expirée</strong> 😭, par mesure de précaution j'ai décidé de ne plus la rendre visible sur le service jusqu'à nouvel ordre.
 <br>
-<br>Je ne veux pas juger, mais son altesse a quand même un peu échoué dans sa mission de maintenir l'ordre dans le royaume....
+<br>Je ne veux pas juger, mais vous avez quand même un peu échoué dans votre mission de maintenir l'ordre dans le royaume....
 <br>
-<br>Je te souhaite que cette journée finisse mieux qu'elle n'a commencé...`,
+<br>Je vous souhaite que cette journée finisse mieux qu'elle n'a commencé...`,
           `L'aide d'id ${id} est expirée et supprimée du catalogue utilisateur`
         );
         if (sent_email) {
