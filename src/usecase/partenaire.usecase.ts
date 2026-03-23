@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
-import { CommuneRepository } from '../../src/infrastructure/repository/commune/commune.repository';
-import { PartenaireRepository } from '../infrastructure/repository/partenaire.repository';
+import { CommuneRepository } from "../../src/infrastructure/repository/commune/commune.repository";
+import { PartenaireRepository } from "../infrastructure/repository/partenaire.repository";
 
 interface ContentAssociatedWithPartenaires extends AssociatedWithPartenaires {
   content_id: string;
@@ -11,36 +11,11 @@ interface ContentAssociatedWithPartenaires extends AssociatedWithPartenaires {
 export class PartenaireUsecase {
   constructor(
     private communeRepository: CommuneRepository,
-    private partenaireRepository: PartenaireRepository,
+    private partenaireRepository: PartenaireRepository
   ) {}
 
-  public external_compute_codes_communes_from_liste_partenaires(
-    part_ids: string[],
-  ): string[] {
-    if (!part_ids || part_ids.length === 0) {
-      return [];
-    }
-    const result = new Set<string>();
-
-    for (const partenare_id of part_ids) {
-      const partenaire = PartenaireRepository.getPartenaire(partenare_id);
-      if (partenaire.code_commune) {
-        result.add(partenaire.code_commune);
-      }
-      if (partenaire.code_epci) {
-        const liste_codes_communes = this.external_compute_communes_from_epci(
-          partenaire.code_epci,
-        );
-        for (const commune of liste_codes_communes) {
-          result.add(commune);
-        }
-      }
-    }
-    return Array.from(result);
-  }
-
   public external_compute_communes_departement_regions_from_liste_partenaires(
-    part_ids: string[],
+    part_ids: string[]
   ): {
     codes_commune: string[];
     codes_region: string[];
@@ -66,7 +41,7 @@ export class PartenaireUsecase {
         }
         if (partenaire.code_epci) {
           const liste_codes_communes = this.external_compute_communes_from_epci(
-            partenaire.code_epci,
+            partenaire.code_epci
           );
           for (const commune of liste_codes_communes) {
             all_codes_communes.add(commune);
@@ -109,7 +84,7 @@ export class PartenaireUsecase {
     T extends ContentAssociatedWithPartenaires,
   >(
     repository: Paginated<T> & WithPartenaireCodes<T> & WithCache,
-    block_size = 100,
+    block_size = 100
   ): Promise<void> {
     await this.partenaireRepository.loadCache();
 
@@ -132,14 +107,14 @@ export class PartenaireUsecase {
 
     const computed =
       this.external_compute_communes_departement_regions_from_liste_partenaires(
-        elem.getPartenaireIds(),
+        elem.getPartenaireIds()
       );
 
     await repository.updateCodesFromPartenaireFor(
       elem.content_id,
       computed.codes_commune,
       computed.codes_departement,
-      computed.codes_region,
+      computed.codes_region
     );
   }
 }

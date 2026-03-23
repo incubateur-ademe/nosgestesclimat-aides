@@ -19,7 +19,7 @@ describe("PartenaireUsecase", () => {
     await TestUtil.appclose();
   });
 
-  const communeRepository = new CommuneRepository(TestUtil.prisma);
+  const communeRepository = new CommuneRepository();
   const partenaireRepository = new PartenaireRepository(TestUtil.prisma);
   const aideRepository = new AideRepository(TestUtil.prisma);
   const partenaireUsecase = new PartenaireUsecase(

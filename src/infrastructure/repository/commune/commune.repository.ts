@@ -3,7 +3,6 @@ import _departements from "@etalab/decoupage-administratif/data/departements.jso
 import _epci from "@etalab/decoupage-administratif/data/epci.json";
 import _regions from "@etalab/decoupage-administratif/data/regions.json";
 import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../../prisma/prisma.service";
 
 const LISTE_COMMUNES = _communes as Commune[];
 const LISTE_EPCIS = _epci as EPCI[];
@@ -123,7 +122,7 @@ export type EPCI = {
 
 @Injectable()
 export class CommuneRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor() {}
 
   supprimernDoublonsCommunesEtLigne5(referentiel) {
     for (const code_postal in referentiel) {
